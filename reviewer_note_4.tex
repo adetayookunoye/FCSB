@@ -170,13 +170,34 @@ ID embeddings capture individual-level screening propensity not explained by dem
 
 \subsection*{New Figure: ``ID Embedding Interpretability Analysis'' (Figure 3)}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{id_embeddings_tsne.png}
+\caption{(A) t-SNE visualization of 1,720 subjects in 2D embedding space, colored by behavioral phenotype. Tight Blue cluster = Consistent Screeners ($n=573$). Diffuse Orange cluster = Inconsistent Screeners ($n=574$). Distinct Purple cluster = Non-Screeners ($n=573$). Automatic clustering without explicit training labels validates meaningful heterogeneity capture.}
+\label{fig:tsne_embedding}
+\end{figure}
+
 \textbf{Panel A (t-SNE Clustering):} Scatter plot of 1,720 subjects in 2D t-SNE space, colored by behavioral phenotype. Tight Blue cluster = Consistent Screeners. Diffuse Orange cluster = Inconsistent Screeners. Distinct Purple cluster = Non-Screeners. Demonstrates automatic discovery of meaningful phenotypes from learned embeddings.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{id_embeddings_covariate_corr.png}
+\caption{(B) Heatmap of Pearson correlations between 32 embedding dimensions and 8 key covariates. Red cells = positive correlation, Blue cells = negative correlation, White = near-zero. First three rows show strong correlations: Dimension 0 $\leftrightarrow$ Insurance ($r=0.916$), Dimension 1 $\leftrightarrow$ Education ($r=0.876$), Dimension 2 $\leftrightarrow$ Income ($r=0.838$). Remaining dimensions (rows 4-32) show $|r| < 0.1$, capturing unmeasured heterogeneity not explained by observed covariates.}
+\label{fig:covariate_corr}
+\end{figure}
 
 \textbf{Panel B (Covariate Correlation Heatmap):} 32 dimensions $\times$ 8 covariates. Red cells = positive correlation, Blue cells = negative correlation, White = near-zero. First three rows show strong correlations (Insurance $r=0.916$, Education $r=0.876$, Income $r=0.838$). Remaining rows show $|r| < 0.1$ (unmeasured heterogeneity). Validates domain alignment and necessity of 32D representation.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\columnwidth]{id_embeddings_propensity.png}
+\caption{(C) Histogram of individual screening propensity scores $p_i$ across all 1,720 subjects. Distribution shows: Range = 0.10--0.60 (substantial heterogeneity), Mean = 0.205, Median = 0.192, SD = 0.084, Coefficient of Variation = 0.41 (41\%). Individual propensity varies by approximately 5:1 odds between extremes, demonstrating substantial individual heterogeneity that justifies high-dimensional embedding representation.}
+\label{fig:propensity_dist}
+\end{figure}
+
 \textbf{Panel C (Propensity Distribution):} Histogram of individual screening propensity scores across all 1,720 subjects. X-axis: Propensity $p_i \in [0,1]$. Y-axis: Frequency. Distribution shows Mean = 0.205, Median = 0.192, SD = 0.084, Range = 0.50. Demonstrates substantial individual heterogeneity justifying embedding component.
 
-\textbf{Caption:} ``ID embeddings capture learned individual screening propensity. (A) t-SNE visualization reveals three behavioral phenotypes: Consistent Screeners ($n=573$, tight), Inconsistent Screeners ($n=574$, diffuse), Non-Screeners ($n=573$, distinct). Automatic clustering without explicit labels validates meaningful heterogeneity capture. (B) Embedding-covariate correlations show principal dimensions align with known risk factors (Insurance $r=0.916$, Education $r=0.876$, Income $r=0.838$), while residual dimensions ($|r|<0.1$) capture unmeasured heterogeneity. Validation that embeddings encode epidemiologically meaningful structure. (C) Individual propensity histogram shows substantial variation (Range: 0.10--0.60, CV = 0.41), justifying high-dimensional representation and explaining performance improvement (+1.0\% sensitivity with ID embeddings vs.\ static only). Collectively, these visualizations address reviewer concern by demonstrating: (i) embeddings capture behavioral heterogeneity, (ii) alignment with domain knowledge, and (iii) magnitude sufficient to improve prediction.''
+\textbf{Figure 3 Summary Caption:} ``ID embeddings capture learned individual screening propensity not explained by demographics alone. (A) t-SNE visualization reveals three behavioral phenotypes: Consistent Screeners ($n=573$, tight), Inconsistent Screeners ($n=574$, diffuse), Non-Screeners ($n=573$, distinct). Automatic clustering without explicit labels validates meaningful heterogeneity capture. (B) Embedding-covariate correlations show principal dimensions align with known risk factors (Insurance $r=0.916$, Education $r=0.876$, Income $r=0.838$), while residual dimensions ($|r|<0.1$) capture unmeasured heterogeneity. Validation that embeddings encode epidemiologically meaningful structure. (C) Individual propensity histogram shows substantial variation (Range: 0.10--0.60, CV = 0.41), justifying high-dimensional representation and explaining performance improvement (+1.0\% sensitivity with ID embeddings vs.\ static only). Collectively, these visualizations address reviewer concern by demonstrating: (i) embeddings capture behavioral heterogeneity, (ii) alignment with domain knowledge, and (iii) magnitude sufficient to improve prediction.''
 
 \section*{Part 4: Addressing Accessibility Across Communities}
 
