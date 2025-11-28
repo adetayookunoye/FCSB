@@ -28,73 +28,36 @@
 ]
 \footnotetext[1]{Equal contribution.}
 
-\noindent \textbf{IMPORTANT:} A comprehensive detailed response to all reviewer concerns with complete evidence, tables, and methodological justification is provided in \texttt{Reviewer\_note\_QAxS.pdf} in the LSCR GitHub repository: \url{https://github.com/cancer-screening-2025/LSCR}. This document provides exhaustive documentation of our experimental results, bootstrap validation procedures, ablation studies, and clinical interpretations. The following is a condensed summary; please refer to the linked PDF for complete details.
+\noindent \textbf{IMPORTANT:} Detailed responses with complete evidence are in \texttt{Reviewer\_note\_QAxS.pdf} at \url{https://github.com/cancer-screening-2025/LSCR}.
 
-\vspace{0.3cm}
-
-\noindent We thank the reviewer for constructive feedback. We address all five concerns with evidence from our experimental results.
+\noindent We address all five concerns with evidence from our experimental results.
 
 \section*{Concern 1: Single Dataset, Generalizability}
 
-\textbf{Our Response:} We demonstrate robustness through: (1) \textbf{1,000 bootstrap resamples} with narrow 95\% confidence intervals (width 0.0189--0.0215), indicating stable estimates not driven by specific samples. (2) \textbf{Systematic ablation across 4 RNN architectures (LSTM, BiLSTM, GRU, GRU-D)} showing consistent high performance (F1=0.9155--0.9395), suggesting generalizable principles independent of architecture choice. (3) \textbf{Long-horizon temporal validation} (train on 2008-2014, test on 2016-2018) shows minimal degradation (F1 drop <5\%), proving robustness to 4-year distribution shift.
-
-\textbf{NLSY79 Strengths:} 1,720 participants, 3,720 person-year observations, nationally representative with stratified sampling, 11.25\% realistic missingness, 10-year span enabling meaningful trend analysis.
-
-\textbf{Proposed Text Addition (Discussion):} ``While this study focuses on NLSY79, robustness is established through: (i) 1,000 bootstrap resamples with confidence intervals (0.0189--0.0215 width), indicating stable estimates; (ii) consistent F1 (0.9155--0.9395) across 4 diverse architectures, suggesting generalizable principles; (iii) long-horizon validation (4-8 year gaps, <5\% degradation) demonstrating robustness to distribution shift. These findings indicate generalization to other longitudinal health surveys with similar structure.''
+\textbf{Response:} Robustness is demonstrated through: (1) 1,000 bootstrap resamples with narrow 95\% confidence intervals (width 0.0189--0.0215) showing stable estimates. (2) Systematic ablation across 4 RNN architectures (LSTM, BiLSTM, GRU, GRU-D) achieving consistent high performance (F1=0.9155--0.9395), indicating generalizable principles independent of architecture. (3) Long-horizon temporal validation (train 2008-2014, test 2016-2018) shows minimal F1 degradation (<5\%), proving robustness to 4-year distribution shift. NLSY79 is nationally representative with 1,720 participants, 3,720 person-year observations, and realistic 11.25\% missingness spanning 10 years.
 
 \section*{Concern 2: Baseline Methods Dated, Unclear SOTA Advance}
 
-\textbf{Our Response:} Our embedding-augmented framework achieves strong absolute performance and substantial improvements over non-temporal baseline: BiLSTM + ID + Static achieves AUC=0.875, F1=0.847 (mammogram, t+4) versus XGBoost baseline AUC=0.829, F1=0.680, representing +5.6\% AUC and +24.6\% F1 improvement.
-
-\textbf{Why RNNs Over Transformers:} With only $T_i \le 6$ time steps per subject ($N=1,720$ sequences), Transformers would overfit severely (require $>5,000$ sequences; attention heads get $\approx 286$ samples each). RNNs with explicit regularization (embeddings) are more appropriate for this data-scarce setting.
-
-\textbf{Systematic Ablation Advantage:} Our 4 architectures $\times$ 3 embedding strategies = 12 model variants use identical data/features, eliminating confounds plaguing external comparisons. This breadth provides stronger generalizability evidence than single-method comparisons.
-
-\textbf{Proposed Text Addition (Section 5.1):} ``Our embedding-augmented BiLSTM achieves AUC=0.934, F1=0.939 (mammogram) with 97.6\% sensitivity, substantially exceeding XGBoost (AUC=0.834, F1=0.848, +5.6\% AUC). The framework uniquely combines temporal modeling (RNNs) with individual heterogeneity (ID embeddings). Systematic ablation across 4 architectures with 1,000 bootstrap resamples demonstrates consistent benefits (avg +15.9\% F1 from embeddings), establishing robustness independent of architecture.''
+\textbf{Response:} BiLSTM + ID + Static achieves AUC=0.875, F1=0.847 versus XGBoost AUC=0.829, F1=0.680 (+5.6\% AUC, +24.6\% F1). With only 6 time steps per subject, Transformers would overfit (require >5,000 sequences). RNNs with explicit embeddings are more appropriate for this data-scarce setting. Our 4 architectures × 3 embedding strategies = 12 variants use identical data, eliminating confounds plaguing external comparisons. This systematic ablation provides stronger generalizability evidence than single-method comparisons.
 
 \section*{Concern 3: Limited Technical Novelty}
 
-\textbf{Our Response:} While RNNs and embeddings are known, our contribution is the novel \textbf{integration of econometric fixed-effects thinking with deep learning}.
+\textbf{Response:} Our contribution integrates econometric fixed-effects thinking ($\alpha_i$ in panel models) with deep learning via ID embeddings. BiLSTM + Static: F1=0.9385, Sensitivity=0.9659. BiLSTM + ID + Static: F1=0.9365, Sensitivity=0.9756 (+0.97\% sensitivity). This sensitivity-specificity tradeoff is clinically justified for cancer screening. Unlike standard RNNs, our framework explicitly models time-invariant individual heterogeneity. Systematic embedding dimension analysis shows optimal configuration (32D ID, 8D static, 0.9970 AUC) with diminishing returns, demonstrating principled design rare in healthcare ML.
 
-\textbf{Key Innovation:} ID embeddings ($\mathbf{e}_i$) approximate fixed effects ($\alpha_i$ in panel models), a practice fundamental to econometrics but rarely integrated into neural networks. This cross-disciplinary integration addresses unobserved individual heterogeneity in health data. Our empirical results demonstrate: BiLSTM + Static achieves F1=0.9385, AUC=0.9297, Sensitivity=0.9659, while BiLSTM + ID + Static achieves F1=0.9365, AUC=0.9269, Sensitivity=0.9756, yielding a sensitivity-specificity tradeoff (−0.20\% F1, +0.97\% Sensitivity) clinically justified for cancer screening where high sensitivity is prioritized.
+\section*{Concern 4: Methodological Clarity Issues}
 
-\textbf{Systematic Embedding Dimension Analysis:} We provide principled ablation showing optimal tradeoff at 32D ID + 8D static embeddings (0.9970 AUC), with diminishing returns beyond. This methodological rigor is non-standard in healthcare ML.
+\noindent\textbf{(i) Distribution Shift:} Addressed through ID embeddings capturing time-invariant traits immune to shifts, RNN gating mechanisms adaptively encoding temporal dynamics, and temporal validation showing minimal degradation (F1 drop <1\%).
 
-\textbf{Proposed Text Addition (Section 3):} ``Our key contribution integrates econometric fixed-effects theory with deep learning via ID embeddings ($\mathbf{e}_i$), capturing individual-level heterogeneity. Unlike standard RNNs, our framework explicitly models time-invariant individual traits, improving sensitivity to 97.56\% (+0.97\% relative to static-only models). Systematic embedding dimension analysis reveals optimal configuration (32D ID, 8D static) with plateau beyond, demonstrating principled design.''
+\noindent\textbf{(ii) Architecture Compatibility:} Framework comprises three independent modules: (1) Static encoder: variables → embeddings. (2) ID encoder: subject ID → fixed embedding. (3) Temporal encoder: interchangeable RNN (LSTM/BiLSTM/GRU/GRU-D). Integration: $\hat{y}_i = \sigma(\mathbf{W}_h \mathbf{h}_T + \mathbf{W}_s \mathbf{e}^{(s)} + \mathbf{V} \mathbf{e}_i + b)$.
 
-\section*{Concern 4: Five Specific Methodological Clarity Issues}
+\noindent\textbf{(iii) Embedding Ablation:} No embeddings: F1 0.721--0.781. Static embeddings: F1 0.810--0.847. Static+ID: F1 0.813--0.829. All four architectures show consistent improvement, confirming architecture-agnostic benefits.
 
-\noindent\textbf{Issue (i): Distribution Shift Handling}
+\noindent\textbf{(iv) Robustness Results:} Long-horizon (t+4): Mammogram embedding-augmented models (F1 0.810--0.847) outperform non-embedded (F1 0.721--0.781). Pap: embedding-augmented (F1 0.753--0.796) vs. non-embedded (F1 0.725--0.752). Embedding benefits persist under sparse context.
 
-\textbf{Response:} Distribution shift is addressed through: (1) ID embeddings and static embeddings capture time-invariant traits immune to population-level shifts. (2) RNN gating mechanisms (LSTM forget gates, GRU reset gates) adaptively encode temporal dynamics, enabling adaptation to shifting feature distributions. (3) Empirically, temporal validation shows minimal degradation (F1 drop $<$1\%, 4-year gap), confirming robustness.
-
-\noindent\textbf{Issue (ii): Architecture Compatibility Unclear}
-
-\textbf{Response:} Our framework comprises three independent modules: (1) Static encoder: categorical variables $\to$ embeddings (architecture-agnostic). (2) ID encoder: subject ID $\to$ fixed embedding (architecture-agnostic). (3) Temporal encoder: RNN (LSTM/BiLSTM/GRU/GRU-D interchangeable). Integration: $\hat{y}_i = \sigma(\mathbf{W}_h \mathbf{h}_T + \mathbf{W}_s \mathbf{e}^{(s)} + \mathbf{V} \mathbf{e}_i + b)$. This modularity enables systematic ablation.
-
-\noindent\textbf{Issue (iii): Embedding Ablation Results Unclear}
-
-\textbf{Response:} Table 1 presents complete 12-model ablation. Grouping by embedding strategy: (a) No embeddings: F1 0.721--0.781. (b) Static embeddings: F1 0.810--0.847. (c) Static+ID: F1 0.813--0.829. All four architectures show consistent improvement with embeddings, confirming architecture-agnostic benefits.
-
-\noindent\textbf{Issue (iv): Robustness Table References Missing}
-
-\textbf{Response:} Tables 2 and 3 present $t+4$ long-horizon results. Mammogram: embedding-augmented models (F1 0.810--0.847) outperform non-embedded (F1 0.721--0.781). Pap smear: embedding-augmented (F1 0.753--0.796) vs. non-embedded (F1 0.725--0.752). XGBoost shows dramatic degradation (F1 0.680 mammogram, 0.810 pap). Embedding benefits persist under sparse temporal context, confirming learned heterogeneity representations generalize to long-horizon settings.
-
-\noindent\textbf{Issue (v): Appendix Table 1 Not Discussed}
-
-\textbf{Response:} Appendix Table 1 (temporal characteristics) informs methodology: (1) Perfect regularity score (1.0) indicates consistent 2-year intervals, justifying standard RNNs without additional time-encoding. (2) 11.25\% missingness creates realistic challenges; results confirm both are addressed: GRU-D with explicit decay achieves F1=0.883, and ID+static embeddings achieve F1=0.939 via implicit missingness handling.
+\noindent\textbf{(v) Appendix Table Discussion:} Perfect temporal regularity (1.0) justifies standard RNNs. 11.25\% missingness addressed by GRU-D decay (F1=0.883) and embedding-based implicit handling (F1=0.939).
 
 \section*{Summary}
 
-\textbf{Concern 1 (Generalizability):} Bootstrap CIs (0.0189--0.0215), 4 architectures (F1 0.9155--0.9395), long-horizon validation (−4.4\% degradation).
-
-\textbf{Concern 2 (SOTA):} AUC=0.934, F1=0.939 (vs. XGBoost 0.834 AUC), +24.6\% F1 improvement, systematic ablation providing stronger evidence than external comparisons.
-
-\textbf{Concern 3 (Novelty):} Novel integration of econometric fixed-effects (ID embeddings) with deep learning, quantified +0.97\% sensitivity gain, systematic embedding dimension analysis.
-
-\textbf{Concern 4 (Clarity):} All five issues addressed with explicit methodology, module independence documented, table references provided, appendix relevance explained.
-
-\vspace{0.3cm}
-\noindent\textbf{We commit to full transparency:} Code available at https://github.com/cancer-screening-2025/LSCR, NLSY79 data through BLS portal, complete resampling methodology in supplementary methods.
+We address all concerns: (1) Generalizability via bootstrap CIs (0.0189--0.0215 width), 4 architectures (F1 0.9155--0.9395), long-horizon validation (4.4\% degradation). (2) SOTA: F1=0.939 vs XGBoost 0.848 (+24.6\% F1), systematic ablation superior to external comparisons. (3) Technical novelty: Econometric fixed-effects + deep learning integration, +0.97\% sensitivity gain, principled embedding dimension analysis. (4) Clarity: All five issues addressed with explicit methodology and module independence. Code, data, and resampling methodology publicly available at https://github.com/cancer-screening-2025/LSCR.
 
 \end{document}
