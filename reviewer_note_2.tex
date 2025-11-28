@@ -35,7 +35,7 @@
 
 \section*{Executive Summary}
 
-We address five specific technical concerns raised by the reviewer: (1) lack of formal statistical significance testing, (2) missing sensitivity/specificity metrics, (3) absence of embedding dimension ablation, (4) unexplained GRU-D underperformance, and (5) incomplete table references. Below we provide detailed responses with quantitative evidence and concrete revisions.
+We address five specific technical concerns: (1) lack of formal statistical significance testing, (2) missing sensitivity/specificity metrics, (3) absence of embedding dimension ablation, (4) unexplained GRU-D underperformance, and (5) incomplete table references.
 
 \section*{Concern 1: Statistical Significance Testing (F1/AUC Magnitudes)}
 
@@ -63,7 +63,7 @@ We conducted 5-fold cross-validation with paired t-tests comparing BiLSTM+ID+Sta
 \item Absolute gain: AUC +8.0\%, F1 +6.1\%
 \end{itemize}
 
-\textbf{Proposed Manuscript Addition (Section 5.1):} ``To establish statistical significance, we conducted 5-fold cross-validation with paired t-tests. For mammograms, BiLSTM+ID+Static achieves mean AUC 0.927±0.016 vs. XGBoost 0.829±0.023 ($t(4)=11.4, p<0.001$). For pap smear, BiLSTM+ID+Static achieves AUC 0.915±0.018 vs. XGBoost 0.835±0.021 ($t(4)=9.8, p<0.001$). Gains exceed noise thresholds, confirming statistical significance.''
+\textbf{Proposed Manuscript Addition (Section 5.1):} ``5-fold CV with paired t-tests: Mammogram BiLSTM+ID+Static achieves AUC 0.927±0.016 vs. XGBoost 0.829±0.023 ($t(4)=11.4, p<0.001$), F1 0.937±0.012 vs. 0.789±0.019 ($t(4)=13.2, p<0.001$). Pap: AUC 0.915±0.018 vs. 0.835±0.021 ($t(4)=9.8, p<0.001$). Gains are statistically significant.''
 
 \section*{Concern 2: Missing Sensitivity/Specificity Metrics}
 
@@ -81,9 +81,9 @@ We now report clinical metrics prioritized by medical practice:
 \item XGBoost: Sensitivity=0.971, Specificity=0.602, PPV=0.902, NPV=0.867
 \end{itemize}
 
-\textbf{Clinical Interpretation:} BiLSTM+ID+Static achieves highest sensitivity (97.6\%), catching nearly all screeners, at cost of slightly lower specificity (60.1\%). This is clinically justified: missing screeners is costlier than false positives in preventive screening programs.
+\textbf{Clinical Interpretation:} BiLSTM+ID+Static achieves highest sensitivity (97.6\%), detecting nearly all screeners. This is clinically justified: missing screeners is costlier than false positives in preventive screening.
 
-\textbf{Proposed Manuscript Addition (Section 5.2 -- New subsection):} ``Clinical evaluation prioritizes sensitivity (detecting screeners) over specificity (avoiding false alarms). BiLSTM+ID+Static achieves sensitivity 97.6\%, enabling identification of 97.6\% of individuals likely to screen, with NPV 87.0\% indicating reliable ruling out of non-screeners. This configuration is recommended for screening program outreach targeting.''
+\textbf{Proposed Manuscript Addition:} ``BiLSTM+ID+Static achieves sensitivity 97.6%, enabling identification of 97.6\% of individuals likely to screen, with NPV 87.0\% indicating reliable ruling out of non-screeners.''
 
 \section*{Concern 3: Embedding Dimension Ablation Study}
 
@@ -101,9 +101,9 @@ We systematically varied ID and static embedding dimensions:
 \item ID Dim 64, Static Dim 16: AUC=0.9962, F1=0.9854, Sensitivity=0.9838
 \end{itemize}
 
-\textbf{Key Finding:} Optimal performance at 32D ID + 8D static embeddings; gains plateau and slightly degrade beyond. This principled analysis demonstrates the model learns efficiently without overfitting.
+\textbf{Key Finding:} Optimal at 32D ID + 8D static; gains plateau beyond. Model learns efficiently without overfitting.
 
-\textbf{Proposed Manuscript Addition (Section 5.3 -- New subsection):} ``Embedding dimension analysis reveals optimal configuration: 32D ID embeddings + 8D static embeddings (AUC 0.9970, F1 0.9816). Performance plateaus beyond this, with diminishing marginal gains (AUC 0.9962 at 64D, slight F1 improvement). This suggests the model efficiently captures individual heterogeneity without excessive parameterization.''
+\textbf{Proposed Addition:} ``Embedding dimension analysis: optimal configuration 32D ID + 8D static (AUC 0.9970, F1 0.9816). Performance plateaus beyond this, suggesting efficient parameterization.''
 
 \section*{Concern 4: GRU-D Underperformance Explanation}
 
@@ -128,7 +128,7 @@ GRU-D's decay mechanisms (exponential time decay, masking vectors) add complexit
 \item BiLSTM advantage: +12.0\% AUC, +6.0\% F1
 \end{itemize}
 
-\textbf{Proposed Manuscript Addition (Section 4.2):} ``GRU-D underperforms because NLSY79 exhibits perfect temporal regularity (score 1.0) with minimal feature-level missingness (11.25\%). Decay mechanisms designed for irregular clinical sampling become computational overhead without benefit. BiLSTM's bidirectional context proves superior on regular, short sequences. This motivates a decision guideline: high regularity $\rightarrow$ BiLSTM; low regularity $\rightarrow$ GRU-D.''
+\textbf{Proposed Manuscript Addition (Section 4.2):} ``GRU-D underperforms because NLSY79 has perfect temporal regularity (score 1.0). Decay mechanisms for irregular sampling become overhead without benefit. BiLSTM's bidirectional context suits regular, short sequences better.''
 
 \section*{Concern 5: Incomplete Table References}
 
